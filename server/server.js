@@ -51,6 +51,24 @@ app.get('/creations/:id', (req, res) => {
     })
 })
 
+//Delete
+app.delete('/creations/:id', (req, res) => {
+    var id = req.params.id;
+
+    if(!ObjectID.isValid(id)){
+        return res.status(404).send();
+    }
+
+    Creation.findByIdAndRemove(id).then((creation) => {
+        if(!creation){
+            return res.status(404).send();
+        }
+        res.send(creation);
+    }).catch((e) => {
+        res.status(404).send();
+    })
+})
+
 app.listen(port, () => {
     console.log(`Started on port ${port}`);
 })

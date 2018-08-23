@@ -98,3 +98,25 @@ describe('GET /creations/:id', () => {
     })
  })
  
+ describe('DELETE /creations/:id', () => {
+     it('should remove a creation', (done) => {
+         var hexId = creation[1]._id.toHexString();
+
+         request(app)
+            .delete(`/creations/${hexId}`)
+            .expect(200)
+            .expect((res) => {
+                expect(res.body.creation._id).toBe(hexId);
+            })
+            .end((err, res) => {
+                if(err) {
+                    return done(err);
+                }
+
+                Creation.findById(hexId).then((creation) => {
+                    expect(creation).toNotExist();
+                    done();
+                }).catch((e) => done(e));
+            })
+     })
+ })
