@@ -120,3 +120,44 @@ describe('GET /creations/:id', () => {
             })
      })
  })
+
+ describe('PATCH /creations/:id', () => {
+    it('should update the creation', (done) => {
+        var hexId = creations[0]._id.toHexString();
+        var text = 'This should be the new text';
+ 
+        request(app)
+            .patch(`/creations/${hexId}`)
+            .send({
+                completed: true,
+                text
+            })
+            .expect(200)
+            .expect((res) => {
+                expect(res.body.creation.text).toBe(text);
+                expect(res.body.creation.completed).toBe(true);
+                expect(res.body.creation.completedAt).toBeA('number');
+            })
+            .end(done)
+    })
+ 
+    it('should clear completedAt when creation is not completed', (done) => {
+        var hexId = creations[1]._id.toHexString();
+        var text = 'This should be the new text!!';
+ 
+        request(app)
+            .patch(`/todos/${hexId}`)
+            .send({
+                completed: false,
+                text
+            })
+            .expect(200)
+            .expect((res) => {
+                expect(res.body.creation.text).toBe(text);
+                expect(res.body.creation.completed).toBe(false);
+                expect(res.body.creation.completedAt).toNotExist();
+            })
+            .end(done)
+    })
+ })
+ 
