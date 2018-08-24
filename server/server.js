@@ -7,6 +7,7 @@ const {ObjectID} = require('mongodb');
 var {mongoose} = require('./db/mongoose');
 var {Creation} = require('./models/creation');
 var {User} = require('./models/user');
+var {authenticate} = require('./middleware/authenticate');
 
 const port = process.env.PORT || 3000;
 
@@ -138,6 +139,14 @@ app.post('/users/login', (req, res) => {
     }).catch((e) => {
         res.status(400).send();
     });
+})
+
+app.delete('/users/me/token', authenticate, (req, res) => {
+    req.user.removeToken(req.token).then(() => {
+        res.status(200).send();
+    }, () => {
+        res.status(400).send();
+    })
 })
 
 app.listen(port, () => {
